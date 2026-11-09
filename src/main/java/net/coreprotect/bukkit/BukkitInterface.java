@@ -3,8 +3,10 @@ package net.coreprotect.bukkit;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.bukkit.Art;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -18,6 +20,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Painting;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockExplodeEvent;
@@ -251,6 +254,8 @@ public interface BukkitInterface {
      */
     boolean setItemMeta(Material rowType, ItemStack itemstack, List<Map<String, Object>> map);
 
+    String getItemName(ItemMeta itemMeta);
+
     /**
      * Gets a book from a chiseled bookshelf.
      * 
@@ -276,6 +281,15 @@ public interface BukkitInterface {
     // --------------------------------------------------------------------------
     // Entity methods
     // --------------------------------------------------------------------------
+
+    /**
+     * Checks whether a loaded chunk's entity data is ready to query.
+     *
+     * @param chunk
+     *            The loaded chunk
+     * @return true when entity data is ready
+     */
+    boolean isChunkEntitiesLoaded(Chunk chunk);
 
     /**
      * Gets metadata from a living entity.
@@ -364,6 +378,21 @@ public interface BukkitInterface {
      * @return The frame class
      */
     Class<?> getFrameClass(Material material);
+
+    /**
+     * Spawns an entity, running a function on it before it is added to the world.
+     * 
+     * @param world
+     *            The world
+     * @param location
+     *            The spawn location
+     * @param entityClass
+     *            The entity class
+     * @param function
+     *            The function to run before the entity is added
+     * @return The spawned entity
+     */
+    <T extends Entity> T spawn(World world, Location location, Class<T> entityClass, Consumer<? super T> function);
 
     // --------------------------------------------------------------------------
     // Sign methods
@@ -465,6 +494,8 @@ public interface BukkitInterface {
      * @return true if the event is for the front side, false otherwise
      */
     boolean isSignFront(SignChangeEvent event);
+
+    Boolean getSignInteractionSide(Sign sign, Player player);
 
 
 
